@@ -37,6 +37,7 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -519,7 +520,7 @@ public class QueryIT extends TestDataHelper {
 			pageRequest = pageResponse.nextPageable();
 			if (pagesRetrieved == expectedNumberOfPages) {
 				assertThat("Page " + pagesRetrieved + ", is last", pageResponse.hasNext(), equalTo(false));
-				assertThat("Page " + pagesRetrieved + ", no following page", pageRequest, nullValue());
+				assertEquals("Page " + pagesRetrieved + ", no following page", pageRequest, Pageable.unpaged());
 				pageResponse = null;
 			} else {
 				assertThat("Page " + pagesRetrieved + ", not last", pageResponse.hasNext(), equalTo(true));

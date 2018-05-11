@@ -126,7 +126,7 @@ public class SimpleHazelcastRepositoryIT extends TestDataHelper {
 	public void delete_ID() {
 		assertThat("Exists before", this.makeupMap.containsKey(YEAR_2009), equalTo(true));
 		
-		this.theRepository.delete(YEAR_2009);
+		this.theRepository.deleteById(YEAR_2009);
 		
 		assertThat("Does not exist after", this.makeupMap.containsKey(YEAR_2009), equalTo(false));
 	}
@@ -164,7 +164,7 @@ public class SimpleHazelcastRepositoryIT extends TestDataHelper {
 		list.add(starTrek);
 		list.add(theFly);
 		
-		this.theRepository.delete(list);
+		this.theRepository.deleteAll(list);
 
 		assertThat("2009 does not exist after", this.makeupMap.containsKey(YEAR_2009), equalTo(false));
 		assertThat("1986 does not exist after", this.makeupMap.containsKey(YEAR_1986), equalTo(false));
@@ -181,8 +181,8 @@ public class SimpleHazelcastRepositoryIT extends TestDataHelper {
 
 	@Test
 	public void exists_ID() {
-		assertThat(YEAR_1986, this.theRepository.exists(YEAR_1986), equalTo(true));
-		assertThat(YEAR_9999, this.theRepository.exists(YEAR_9999), equalTo(false));
+		assertThat(YEAR_1986, this.theRepository.existsById(YEAR_1986), equalTo(true));
+		assertThat(YEAR_9999, this.theRepository.existsById(YEAR_9999), equalTo(false));
 	}
 
 	@Test
@@ -218,7 +218,7 @@ public class SimpleHazelcastRepositoryIT extends TestDataHelper {
 		years.add(YEAR_1986);
 		years.add(YEAR_2009);
 		
-		Iterable<Makeup> iterable = this.theRepository.findAll(years);
+		Iterable<Makeup> iterable = this.theRepository.findAllById(years);
 		assertThat("iterable", iterable, not(nullValue()));
 		
 		Iterator<Makeup> iterator = iterable.iterator();
@@ -245,7 +245,7 @@ public class SimpleHazelcastRepositoryIT extends TestDataHelper {
 
 	@Test
 	public void findOne_ID() {
-		Makeup makeup = this.theRepository.findOne(YEAR_1986);
+		Makeup makeup = this.theRepository.findById(YEAR_1986).get();
 		
 		assertThat("1986 found", makeup, not(nullValue()));
 		assertThat(makeup.getId(), equalTo(YEAR_1986));
@@ -287,7 +287,7 @@ public class SimpleHazelcastRepositoryIT extends TestDataHelper {
 		list.add(citizenKane);
 		list.add(goneWithTheWind);
 		
-		Iterable<Makeup> iterable = this.theRepository.save(list);
+		Iterable<Makeup> iterable = this.theRepository.saveAll(list);
 		assertThat("iterable", iterable, not(nullValue()));
 		
 		Iterator<Makeup> iterator = iterable.iterator();

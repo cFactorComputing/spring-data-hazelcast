@@ -41,7 +41,7 @@ public class HazelcastSortAccessor implements SortAccessor<Comparator<Entry<?, ?
 	 * Sort on a sequence of fields, possibly none.
 	 * </P>
 	 *
-	 * @param query If not null, will contain one of more {@link Sort.Order} objects.
+	 * @param query If not null, will contain one of more {@link org.springframework.data.domain.Sort.Order} objects.
 	 * @return A sequence of comparators or {@code null}
 	 */
 	public Comparator<Entry<?, ?>> resolve(KeyValueQuery<?> query) {

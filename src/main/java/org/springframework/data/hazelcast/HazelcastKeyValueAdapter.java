@@ -36,83 +36,82 @@ import java.util.Map.Entry;
  */
 public class HazelcastKeyValueAdapter extends AbstractKeyValueAdapter {
 
-	private HazelcastInstance hzInstance;
+    private HazelcastInstance hzInstance;
 
-	public HazelcastKeyValueAdapter() {
-		this(Hazelcast.getOrCreateHazelcastInstance(new Config(Constants.HAZELCAST_INSTANCE_NAME)));
-	}
+    public HazelcastKeyValueAdapter() {
+        this(Hazelcast.getOrCreateHazelcastInstance(new Config(Constants.HAZELCAST_INSTANCE_NAME)));
+    }
 
-	public HazelcastKeyValueAdapter(HazelcastInstance hzInstance) {
-		super(new HazelcastQueryEngine());
-		Assert.notNull(hzInstance, "hzInstance must not be 'null'.");
-		this.hzInstance = hzInstance;
-	}
+    public HazelcastKeyValueAdapter(HazelcastInstance hzInstance) {
+        super(new HazelcastQueryEngine());
+        Assert.notNull(hzInstance, "hzInstance must not be 'null'.");
+        this.hzInstance = hzInstance;
+    }
 
-	public void setHzInstance(HazelcastInstance hzInstance) {
-		this.hzInstance = hzInstance;
-	}
+    public void setHzInstance(HazelcastInstance hzInstance) {
+        this.hzInstance = hzInstance;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object put(Serializable id, Object item, Serializable keyspace) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object put(Object id, Object item, String keyspace) {
+        Assert.notNull(id, "Id must not be 'null' for adding.");
+        Assert.notNull(item, "Item must not be 'null' for adding.");
 
-		Assert.notNull(id, "Id must not be 'null' for adding.");
-		Assert.notNull(item, "Item must not be 'null' for adding.");
+        return getMap(keyspace).put(id, item);
+    }
 
-		return getMap(keyspace).put(id, item);
-	}
+    @Override
+    public boolean contains(Object id, String keyspace) {
+        return getMap(keyspace).containsKey(id);
+    }
 
-	@Override
-	public boolean contains(Serializable id, Serializable keyspace) {
-		return getMap(keyspace).containsKey(id);
-	}
+    @Override
+    public Object get(Object id, String keyspace) {
+        return getMap(keyspace).get(id);
+    }
 
-	@Override
-	public Object get(Serializable id, Serializable keyspace) {
-		return getMap(keyspace).get(id);
-	}
+    @Override
+    public Object delete(Object id, String keyspace) {
+        return getMap(keyspace).remove(id);
+    }
 
-	@Override
-	public Object delete(Serializable id, Serializable keyspace) {
-		return getMap(keyspace).remove(id);
-	}
+    @Override
+    public Collection<?> getAllOf(String keyspace) {
+        return getMap(keyspace).values();
+    }
 
-	@Override
-	public Collection<?> getAllOf(Serializable keyspace) {
-		return getMap(keyspace).values();
-	}
+    @Override
+    public void deleteAllOf(String keyspace) {
+        getMap(keyspace).clear();
+    }
 
-	@Override
-	public void deleteAllOf(Serializable keyspace) {
-		getMap(keyspace).clear();
-	}
+    @Override
+    public void clear() {
+        this.hzInstance.shutdown();
+    }
 
-	@Override
-	public void clear() {
-		this.hzInstance.shutdown();
-	}
+    @SuppressWarnings("rawtypes")
+    protected IMap getMap(final Serializable keyspace) {
+        Assert.isInstanceOf(String.class, keyspace, "Keyspace identifier must of type String.");
+        return hzInstance.getMap((String) keyspace);
+    }
 
-	@SuppressWarnings("rawtypes")
-	protected IMap getMap(final Serializable keyspace) {
-		Assert.isInstanceOf(String.class, keyspace, "Keyspace identifier must of type String.");
-		return hzInstance.getMap((String) keyspace);
-	}
+    @Override
+    public void destroy() throws Exception {
+        this.clear();
+    }
 
-	@Override
-	public void destroy() throws Exception {
-		this.clear();
-	}
+    @Override
+    public long count(String keyspace) {
+        return this.getMap(keyspace).size();
+    }
 
-	@Override
-	public long count(Serializable keyspace) {
-		return this.getMap(keyspace).size();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public CloseableIterator<Entry<Serializable, Object>> entries(Serializable keyspace) {
-		Iterator<Entry<Serializable, Object>> iterator = this.getMap(keyspace).entrySet().iterator();
-		return new ForwardingCloseableIterator<Entry<Serializable, Object>>(iterator);
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public CloseableIterator<Entry<Object, Object>> entries(String keyspace) {
+        Iterator<Entry<Object, Object>> iterator = this.getMap(keyspace).entrySet().iterator();
+        return new ForwardingCloseableIterator<Entry<Object, Object>>(iterator);
+    }
 
 }

@@ -1,6 +1,7 @@
 package test.utils.repository.custom;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import org.springframework.data.hazelcast.repository.support.SimpleHazelcastRepository;
 import org.springframework.data.keyvalue.core.KeyValueOperations;
@@ -31,17 +32,17 @@ public class MyTitleRepositoryImpl<T extends Serializable, ID extends Serializab
 	 * Count the words in a particular title.
 	 * </P>
 	 * 
-	 * @param Key to lookup
+	 * @param year to lookup
 	 * @return Tokens in string, -1 if not found
 	 */
 	public int wordsInTitle(String year) {
 		@SuppressWarnings("unchecked")
-		MyTitle myTitle = (MyTitle) super.findOne((ID) year);
+		Optional<MyTitle> myTitle = (Optional<MyTitle>) super.findById((ID) year);
 
-		if (myTitle==null) {
+		if (!myTitle.isPresent()) {
 			return -1;
 		} else {
-			return myTitle.getTitle().split("[-\\s]").length;
+			return myTitle.get().getTitle().split("[-\\s]").length;
 		}
 	}
 

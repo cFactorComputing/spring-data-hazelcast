@@ -30,23 +30,23 @@ import org.springframework.data.keyvalue.core.query.KeyValueQuery;
 public class HazelcastCriteriaAccessor implements CriteriaAccessor<Predicate<?, ?>> {
 
 	/**
-	 * @param A query in Spring form
+	 * @param query in Spring form
 	 * @return The same in Hazelcast form
 	 */
 	public Predicate<?, ?> resolve(KeyValueQuery<?> query) {
 
-		if (query == null || query.getCritieria() == null) {
+		if (query == null || query.getCriteria() == null) {
 			return null;
 		}
 
-		if (query.getCritieria() instanceof PagingPredicate) {
-			PagingPredicate pagingPredicate = (PagingPredicate) query.getCritieria();
+		if (query.getCriteria() instanceof PagingPredicate) {
+			PagingPredicate pagingPredicate = (PagingPredicate) query.getCriteria();
 			query.limit(pagingPredicate.getPageSize());
 			return pagingPredicate.getPredicate();
 		}
 
-		if (query.getCritieria() instanceof Predicate) {
-			return (Predicate<?, ?>) query.getCritieria();
+		if (query.getCriteria() instanceof Predicate) {
+			return (Predicate<?, ?>) query.getCriteria();
 		}
 
 		throw new UnsupportedOperationException(query.toString());
